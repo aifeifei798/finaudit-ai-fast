@@ -1,0 +1,7 @@
+{
+  "name": "delta",
+  "description": "预期差雷达：电话会指引 vs 一致预期，输出3条市场没反应的核心变动",
+  "agents": ["magistrate", "business-strategist"],
+  "skills": ["consensus-benchmarker-skill", "sentiment-event-skill", "financial-research-skill"],
+  "prompt": "针对 {{target}} 跑预期差雷达。输入: engine 输出的 _guidance.csv + consensus_delta.csv + 本期电话会要点。business-strategist 只输出3条：市场没反应过来的核心变动（每条配指引/Consensus原文 + Δ% + 方向）；无覆盖诚实写 N/A。magistrate 定 conviction（High/Med/Low），高亢奋（内在价值低于Consensus>20%）禁重仓。"
+}

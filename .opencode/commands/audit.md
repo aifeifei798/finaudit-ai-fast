@@ -1,11 +1,10 @@
 ---
-description: 闪电排雷模式 — 快速检测财务与治理高危风险
-agent: fraud-screener
+description: 秒级排雷 — 能不能碰？有无暴雷前兆？(engine + 法证猎手，30秒)
+agent: magistrate
 ---
 
-针对 $ARGUMENTS 执行闪电排雷 (与 audit.json 同义，Markdown 入口)。
+针对 $ARGUMENTS 执行秒级排雷 (与 audit.json 同义，Markdown 入口)。
 
-请调用 `quantitative-fraud-metrics`、`governance-redflags-skill`（按`market-adapter-skill`切分市场阈值），输入 `workspace/targets/{TICKER}_{PERIOD}/extracted/`，2 分钟内出具《财务与治理高危风险排雷体检单》。
-
-必查：M-Score (灰区即预警) / 现金债悖论 / 股权质押 (分市场阈值) / 审计意见 / CFO 异动。
-输出：`workspace/targets/{TICKER}_{PERIOD}/extracted/_audit_flash.md` + 更新 `pipeline-state.json {fraud_metrics}`。
+1. 先跑 `engine/run_all.py`（0 Token秒级）：`_verdict.json` 给 RED/YELLOW/GREEN + red_flags + 目标价 + 仓位帽。
+2. `forensic-auditor` 定性复核（脱水问询函/附注交叉/漂移/流水），输出疑点表。
+3. `magistrate` 一页裁决：结论 + 折价率 + 仓位；无证据指控直接 Dismiss。

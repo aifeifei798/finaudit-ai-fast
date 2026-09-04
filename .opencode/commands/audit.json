@@ -1,7 +1,7 @@
 {
   "name": "audit",
-  "description": "闪电排雷模式：快速检测财务与治理高危风险",
-  "agents": ["fraud-screener"],
-  "skills": ["quantitative-fraud-metrics", "governance-redflags-skill", "market-adapter-skill"],
-  "prompt": "针对 {{target}} 执行闪电排雷。输入: workspace/targets/{{target}}/extracted/ (fallback workspace/extracted/，禁止直读raw PDF全文)。请调用 fraud-screener 跑 quantitative-fraud-metrics 和 governance-redflags-skill，在 2 分钟内出具《财务与治理高危风险排雷体检单》，重点列出做空机会或暴雷隐患。M-Score 灰区以上必须配 Cash Verification 要求；治理按分市场质押阈值判定。结果写入 workspace/targets/{{target}}/extracted/_audit_flash.md 并更新 pipeline-state.json {fraud_metrics} 状态。超时策略: 优先 M-Score + 质押 + 审计意见，其余记 Gap。"
+  "description": "秒级排雷：能不能碰？有无暴雷前兆？(engine 0-Token计算 + 法证猎手定性，30秒)",
+  "agents": ["magistrate", "forensic-auditor"],
+  "skills": ["quantitative-fraud-metrics", "governance-redflags-skill", "black-account-checker", "pii-sanitizer-skill"],
+  "prompt": "针对 {{target}} 执行秒级排雷，只回答：这公司能不能碰？有无暴雷前兆？流程: 1. 跑 engine/run_all.py --case engine/fixtures/{{target}} --out workspace/targets/{{target}}（0 Token，秒级，产出 _verdict.json: RED/YELLOW/GREEN + red_flags + target + position_cap）；2. forensic-auditor 用脱水问询函/附注交叉/漂移做定性复核，给疑点表；3. magistrate 拍板一页裁决（结论/折价率/仓位，Dismiss无证据指控）。超时策略: engine 永远先行；定性缺料记 Gap 不阻塞 verdict。"
 }

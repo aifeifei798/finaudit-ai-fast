@@ -1,28 +1,29 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "default_agent": "orchestrator",
+  "default_agent": "magistrate",
   "skills": {
     "paths": [".opencode/skills"]
   },
   "agent": {
-    "orchestrator": {
+    "magistrate": {
       "model": "anthropic/claude-sonnet-4-6",
       "mode": "primary",
-      "description": "[T2] 总编排 — pipeline-state状态机、DAG调度、双模式(institutional/batch-autonomous)、失败重试 (配gate-keeper守双门)",
+      "description": "[v2.0] 裁判裁决PM — 综合engine定量+两路专家输入，拍板结论/折价率/仓位，唯一签收人",
       "permission": {
         "edit": "ask",
         "bash": {
           "ls *": "allow",
           "cat *": "allow",
+          "python3 engine/*": "allow",
           "*": "ask"
         }
       },
-      "skills": ["multi-doc-reasoning-skill", "citation-engine-skill", "market-adapter-skill"]
+      "skills": ["valuation-modeling-skill", "portfolio-construction-skill", "adversarial-skeptic-skill", "professional-reporting-skill", "citation-engine-skill"]
     },
-    "ticker-resolver": {
+    "forensic-auditor": {
       "model": "anthropic/claude-sonnet-4-6",
       "mode": "subagent",
-      "description": "[T1] 代码消歧 — market/ticker/period/FY口径 + peer初筛",
+      "description": "[v2.0] 法证猎手 — 定性排雷：问询函/附注/漂移/流水，只找矛盾打分，不算术",
       "permission": {
         "edit": "deny",
         "bash": {
@@ -31,231 +32,12 @@
           "*": "ask"
         }
       },
-      "skills": ["financial-research-skill", "market-adapter-skill"]
+      "skills": ["pii-sanitizer-skill", "black-account-checker", "quantitative-fraud-metrics", "governance-redflags-skill"]
     },
-    "filing-collector": {
+    "business-strategist": {
       "model": "anthropic/claude-sonnet-4-6",
       "mode": "subagent",
-      "description": "[T1] 公告采集 — 三源路由下载raw + bibliography初版",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "grep *": "allow",
-          "head *": "allow",
-          "tail *": "allow",
-          "wc *": "allow",
-          "find *": "allow",
-          "curl *": "deny",
-          "wget *": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["financial-research-skill", "market-adapter-skill"]
-    },
-    "financial-researcher": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T1] 检索解析 — 结构化抽取到extracted (XBRL优先)",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "grep *": "allow",
-          "head *": "allow",
-          "tail *": "allow",
-          "wc *": "allow",
-          "find *": "allow",
-          "curl *": "deny",
-          "wget *": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["financial-research-skill", "financial-parser-skill"]
-    },
-    "evidence-locker": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T1] 证据柜 — _bibliography.csv唯一写者，引证登记核验",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "*": "ask"
-        }
-      },
-      "skills": ["evidence-locker-skill", "citation-engine-skill"]
-    },
-    "black-account-checker": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "primary",
-      "description": "[T2] 查黑账取证 — 私有流水六步法 + 关联穿透 (旁路，不进report主链，不跑M-Score；Step0强制PII脱敏)",
-      "permission": {
-        "edit": "deny",
-        "bash": {
-          "cat *": "allow",
-          "grep *": "allow",
-          "ls *": "allow",
-          "head *": "allow",
-          "tail *": "allow",
-          "wc *": "allow",
-          "find *": "allow",
-          "awk *": "allow",
-          "sort *": "allow",
-          "uniq *": "allow",
-          "curl *": "deny",
-          "wget *": "deny",
-          "python3 *os.environ*": "deny",
-          "python3 *requests*": "deny",
-          "env": "deny",
-          "printenv": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["pii-sanitizer-skill", "black-account-checker"]
-    },
-    "fraud-screener": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 财务排雷 — M-Score/Z-Score/Sloan + 治理红旗 (主链唯一排雷方，不碰私有流水)",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "grep *": "allow",
-          "head *": "allow",
-          "tail *": "allow",
-          "wc *": "allow",
-          "find *": "allow",
-          "python3 *": "allow",
-          "curl *": "deny",
-          "wget *": "deny",
-          "env": "deny",
-          "printenv": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["quantitative-fraud-metrics", "governance-redflags-skill", "market-adapter-skill"]
-    },
-    "financial-analyst": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 多文档对账 — 重述优先 + Pre-Valuation HITL发起 (不跑M-Score)",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "ask",
-          "curl *": "deny",
-          "wget *": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["multi-doc-reasoning-skill"]
-    },
-    "industry-peer-analyst": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 行业对标 — peer benchmarking + 宏观归因 + ESG负面筛查 + Consensus预期差",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "ask",
-          "curl *": "deny",
-          "wget *": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["peer-comparison-skill", "macro-context-skill", "esg-redflag-skill", "market-adapter-skill", "consensus-benchmarker-skill"]
-    },
-    "sentiment-event-analyst": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T1] 情绪事件 — 事件日历 + 预期差，只进风险附录",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "*": "ask"
-        }
-      },
-      "skills": ["sentiment-event-skill"]
-    },
-    "valuation-expert": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 估值主理 — Dispatcher选引擎(DCF/Multiples/金融旁路)定价 (唯一写models/建模方)",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "allow",
-          "libreoffice *": "allow",
-          "curl *": "deny",
-          "wget *": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["valuation-modeling-skill", "market-adapter-skill"]
-    },
-    "scenario-sensitivity-analyst": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 情景敏感性 — Bull/Base/Bear + WACC×g矩阵",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "allow",
-          "curl *": "deny",
-          "wget *": "deny",
-          "*": "ask"
-        }
-      },
-      "skills": ["valuation-modeling-skill"]
-    },
-    "portfolio-strategist": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 组合策略 — 仓位/集中度/止损 (估值完成后)",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "ask",
-          "*": "ask"
-        }
-      },
-      "skills": ["portfolio-construction-skill", "macro-context-skill"]
-    },
-    "adversarial-skeptic": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 红队质询 — 五情景压测 + Challenge Log拥有者",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "ask",
-          "*": "ask"
-        }
-      },
-      "skills": ["adversarial-skeptic-skill"]
-    },
-    "compliance-checker": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T3] 合规审查 — 三市场措辞审查，只判不写",
+      "description": "[v2.0] 商业分析师 — 护城河/增速/指引/Consensus预期差，只回答Alpha在哪，不算术",
       "permission": {
         "edit": "deny",
         "bash": {
@@ -264,66 +46,7 @@
           "*": "ask"
         }
       },
-      "skills": ["professional-reporting-skill"]
-    },
-    "judge-qa": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T3] 数字裁判 — 三方比对 + 引用完整性 + 双HITL校验 (须与writer异构)",
-      "permission": {
-        "edit": "deny",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "ask",
-          "*": "ask"
-        }
-      },
-      "skills": ["citation-engine-skill", "evidence-locker-skill"]
-    },
-    "gate-keeper": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 门禁协调 — 双HITL唯一签收人，严格版无旁路",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "*": "ask"
-        }
-      },
-      "skills": ["multi-doc-reasoning-skill", "adversarial-skeptic-skill"]
-    },
-    "report-writer": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T2] 终稿研报 — FN合规研报 + Challenge决议附录 (门禁执行人)",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "*": "ask"
-        }
-      },
-      "skills": ["professional-reporting-skill", "citation-engine-skill"]
-    },
-    "visualization-excel": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "mode": "subagent",
-      "description": "[T1] 可视化活表 — 图表包 + 活表联动验证，只读渲染",
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "ls *": "allow",
-          "cat *": "allow",
-          "python3 *": "allow",
-          "libreoffice *": "allow",
-          "*": "ask"
-        }
-      },
-      "skills": ["excel-export-skill", "chart-visualization-skill"]
+      "skills": ["peer-comparison-skill", "macro-context-skill", "sentiment-event-skill", "consensus-benchmarker-skill", "financial-research-skill"]
     }
   }
 }
