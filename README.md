@@ -5,7 +5,7 @@
 > **3 commands. 3 agents. Zero agent cosplay.**
 
 [![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Python: 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue.svg)](https://www.python.org/)
+[![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Latency: ~30s](https://img.shields.io/badge/Screening%20Latency-~30s-green.svg)](#tools)
 [![Eval: Recall ≥ 92%](https://img.shields.io/badge/Eval%20Recall-%E2%89%A592%25-brightgreen.svg)](#eval--golden-benchmark)
 
